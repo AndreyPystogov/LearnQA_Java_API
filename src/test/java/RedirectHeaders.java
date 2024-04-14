@@ -7,22 +7,33 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class RedirectHeaders {
+    int StatusCode = 300;
+    int counter =0;
+    String url = "https://playground.learnqa.ru/api/long_redirect";
+
     @Test
-    public void redirectHeaders(){
-        Map<String, String> params = new HashMap<>();
+    public void redirectHeaders() {
+        do {
+            Map<String, String> params = new HashMap<>();
 
-        Response response = RestAssured
-                .given()
-                .redirects()
-                .follow(false)
-                .get("https://playground.learnqa.ru/api/long_redirect")
-                .andReturn();
+            Response response = RestAssured
+                    .given()
+                    .redirects()
+                    .follow(false)
+                    .get(url)
+                    .andReturn();
 
-
-        String responseHeader = response.getHeader("Location");
-        System.out.println(responseHeader);
-
+            int StatusCode = response.getStatusCode();
+            String responseHeader = response.getHeader("Location");
+            System.out.println(responseHeader);
+            System.out.println(StatusCode);
+            url = responseHeader;
+            counter ++;
+            System.out.println(counter);
+        }
+        while (StatusCode != 200);
 
     }
+
 }
 
