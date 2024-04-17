@@ -1,45 +1,58 @@
 import io.restassured.RestAssured;
 import io.restassured.path.json.JsonPath;
+import io.restassured.response.Response;
 import org.junit.jupiter.api.Test;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 public class jsonParsing1 {
     @Test
     public void jsonParsing() throws InterruptedException {
-       // Map<String, String> params = new HashMap<>();
-      // params.put("token");
-
-        JsonPath response = RestAssured
-                //.given()
-                //.queryParams(params)
-                .get("https://playground.learnqa.ru/ajax/api/longtime_job")
-                .jsonPath();
-
-        String token = response.get("token");
-        int time = response.get("seconds");
-
-        JsonPath response2 = RestAssured
-                .given()
-                .queryParams("token",token)
-                .get("https://playground.learnqa.ru/ajax/api/longtime_job")
-                .jsonPath();
-        String status = response2.get("status");
-        if (status.equals("Job is NOT ready"))
-            System.out.println(status);
-
-        System.out.println("Wait " + time + " seconds");
-        Thread.sleep(time*1000);
-
-        JsonPath response3 = RestAssured
-                .given()
-                .queryParams("token",token)
-                .get("https://playground.learnqa.ru/ajax/api/longtime_job")
-                .jsonPath();
-        String result = response3.get("result");
-        status = response3.get("status");
+        String[] passwords = {
+                 "123456", "123456789", "password",
+                "1234567", "12345678", "12345", "iloveyou",
+                "123123", "abc123", "qwerty123", "1q2w3e4r",
+                "admin", "666666", "qwertyuiop", "654321",
+                "555555", "lovely", "7777777", "welcome",
+                "888888", "princess", "dragon", "password1", "123qwe"
+        };
+        for(int i=0; i<24; i++) {
+        Map<String, Object> body = new HashMap<>();
+        body.put("login","super_admin");
+        body.put("password",passwords[i]);
 
 
-        if (status.equals("Job is ready") && !result.isEmpty() )
-            System.out.println("Test passed");
+
+            Response response = RestAssured
+                    .given()
+                    .body(body)
+                    .post("https://playground.learnqa.ru/ajax/api/get_secret_password_homework")
+                    .andReturn();
+           // response.print();
+            String authcookie = response.getCookie("auth_cookie");
+            //System.out.println(authcookie);
+
+            Map<String, String> cookies = new HashMap<>();
+            cookies.put("auth_cookie", authcookie);
+
+            Response response2 = RestAssured
+                    .given()
+                    .cookies(cookies)
+                    .post("https://playground.learnqa.ru/ajax/api/check_auth_cookie")
+                    .andReturn();
+            String pass = response2.asString();
+
+            if (pass.equals("You are authorized")) {
+                System.out.println("Current password is " + passwords[i]);
+                break;
+            }
+
+
+        }
+
+
     }
 }
