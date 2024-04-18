@@ -2,17 +2,21 @@ import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import java.util.Map;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class get_text {
     @Test
     public void getTextt(){
         Response response = RestAssured
-                .get("https://playground.learnqa.ru/ajax/api/check_auth_cookie")
+                .get("https://playground.learnqa.ru/api/homework_cookie")
                 .andReturn();
-        System.out.println(response.asString().length());
-        assertTrue(response.asString().length() >15, "Message has less than 15 symbols");
+
+        Map<String,String> cookies = response.getCookies();
+        System.out.println(cookies);
+        assertTrue(cookies.containsKey("HomeWork"), "Something wrong with cookie key");
+        assertTrue(cookies.containsValue("hw_value"), "Something wrong with cookie value");
 
 
     }
