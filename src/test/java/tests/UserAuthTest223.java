@@ -73,7 +73,7 @@ public class UserAuthTest223 extends BaseTestCase {
         } else {
 
             Response responseForCheck = spec.get().andReturn();
-            Assertions.asserJsonByName(responseForCheck, "user_id", 0);
+            Assertions.assertJsonByName(responseForCheck, "user_id", 0);
         }
 
     }
