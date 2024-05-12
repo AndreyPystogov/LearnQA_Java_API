@@ -133,7 +133,7 @@ public class UserRegisterTest extends BaseTestCase {
 
         Response requestWthLongName = apiCoreRequest
                 .makePostRequest("https://playground.learnqa.ru/api/user/", userData);
-        System.out.println(requestWthLongName.asString());
+
         Assertions.assertResponseTextEquals(requestWthLongName,"The value of 'firstName' field is too long");
     }
     }
