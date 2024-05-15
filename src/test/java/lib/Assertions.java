@@ -2,8 +2,7 @@ package lib;
 
 import io.restassured.response.Response;
 
-import static org.hamcrest.Matchers.hasKey;
-import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
@@ -41,5 +40,11 @@ public class Assertions {
     public static void assertJsonHasNotField(Response Response, String unexpectedFieldName){
         Response.then().assertThat().body("$", not(hasKey(unexpectedFieldName)));
     }
+    public static void assertJsonHasOnlyField(Response Response, String expectedFieldName) {
+        // Проверяем, что присутствует только одно поле и это поле совпадает с ожидаемым
+        Response.then().assertThat()
+                .body("$", hasKey(expectedFieldName));
 
+
+    }
      }
