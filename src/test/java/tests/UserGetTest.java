@@ -52,7 +52,7 @@ public class UserGetTest extends BaseTestCase {
         Map<String,String> authData = new HashMap<>();
         authData.put("email", "vinkotov@example.com");
         authData.put("password","1234");
-
+        String[] unexpectedFieldNames = {"password","email","firstName","lastName"};
 
         Response responseGetAuthData = apiCoreRequest
                 .makePostRequest("https://playground.learnqa.ru/api/user/login", authData);
@@ -64,8 +64,9 @@ public class UserGetTest extends BaseTestCase {
         Response responseUserData = apiCoreRequest
                 .makeGetRequest("https://playground.learnqa.ru/api/user/1",header,cookie);
 
-        Assertions.assertJsonHasOnlyField(responseUserData, "username");
-        responseUserData.prettyPrint();
+        Assertions.assertJsonHasField(responseUserData,"username");//Проверяем наличие юзернейма
+        Assertions.assertJsonHasNoFields(responseUserData, unexpectedFieldNames); //Проверем отсутсвие других полей в ответе
+
 
 
 
